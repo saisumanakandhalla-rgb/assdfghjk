@@ -1,0 +1,494 @@
+/**
+ * LIFELOOP — Feature Specific Styling
+ * Map styling, Transport Matching Engine, Learning Simulators, and Trust & Safety
+ */
+
+/* ==========================================================================
+   Interactive Community Impact Map (Feature 4)
+   ========================================================================== */
+.map-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.map-header-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.map-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.map-filter-btn {
+  background: var(--color-ivory-100);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition-fast);
+}
+
+.map-filter-btn:hover {
+  background: var(--color-ivory-300);
+  color: var(--color-forest-900);
+}
+
+.map-filter-btn.active {
+  background: var(--color-forest-800);
+  color: #FFFFFF;
+  border-color: var(--color-forest-800);
+}
+
+.map-viewport-container {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  position: relative;
+  min-height: 580px;
+}
+
+.map-canvas-card {
+  background: #E8EFE8;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 8px rgba(18, 56, 38, 0.08);
+  min-height: 580px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-svg-board {
+  width: 100%;
+  height: 100%;
+  min-height: 580px;
+  display: block;
+  user-select: none;
+}
+
+.map-pin {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s;
+}
+
+.map-pin:hover {
+  transform: scale(1.22);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+}
+
+.map-pin.active-pin circle {
+  stroke: #FFFFFF;
+  stroke-width: 3.5px;
+  filter: drop-shadow(0 0 10px rgba(217, 107, 39, 0.8));
+}
+
+.map-sidebar-details {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  max-height: 620px;
+  overflow-y: auto;
+}
+
+.map-legend-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   Farm-To-Transport Matching UI (Feature 2)
+   ========================================================================== */
+.transport-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.transport-header-banner {
+  background: linear-gradient(135deg, var(--color-forest-900) 0%, var(--color-forest-800) 60%, var(--color-forest-700) 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.transport-header-info h2 {
+  font-family: var(--font-family-display);
+  font-size: 1.85rem;
+  margin-bottom: 8px;
+  color: #FFFFFF;
+}
+
+.transport-header-info p {
+  color: var(--color-ivory-300);
+  max-width: 600px;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.transport-requests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 24px;
+}
+
+.transport-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-base);
+  position: relative;
+}
+
+.transport-card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
+}
+
+.transport-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--color-ivory-100);
+  padding: 14px;
+  border-radius: var(--radius-md);
+  margin: 16px 0;
+  font-size: var(--font-size-xs);
+}
+
+.transport-meta-item strong {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.transport-meta-item span {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Suitability Scorecard */
+.suitability-box {
+  background: #F8FAF9;
+  border: 1px solid #D1E5DA;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-top: 14px;
+}
+
+.suitability-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.suitability-score-pill {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.suitability-score-high {
+  background: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #A5D6A7;
+}
+
+.suitability-score-med {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FCD34D;
+}
+
+.suitability-score-low {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #FCA5A5;
+}
+
+.suitability-reasons-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.suitability-reasons-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.suitability-reasons-list li svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Provider Interest Cards Inside Request */
+.provider-matches-section {
+  margin-top: 16px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
+}
+
+.provider-match-card {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #FFFFFF;
+}
+
+.provider-match-card.status-confirmed {
+  border-color: #2E7D32;
+  background: #F3FAF4;
+}
+
+/* ==========================================================================
+   Learn By Solving Real Problems (Feature 3)
+   ========================================================================== */
+.missions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.mission-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-base);
+  position: relative;
+}
+
+.mission-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-forest-500);
+}
+
+.mission-card.mission-completed {
+  border-color: var(--color-forest-300);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5F9F6 100%);
+}
+
+.mission-completed-tag {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--color-forest-100);
+  color: var(--color-forest-800);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mission-points-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-orange-50);
+  color: var(--color-orange-700);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-orange-400);
+  margin-bottom: 12px;
+}
+
+/* Interactive Simulator Stages */
+.simulator-stage-box {
+  background: var(--color-ivory-50);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin: 16px 0;
+}
+
+.simulator-step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  color: var(--color-forest-800);
+}
+
+.simulator-qr-preview {
+  background: #FFFFFF;
+  border: 2px dashed var(--color-forest-300);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  margin: 14px 0;
+}
+
+.simulator-qr-svg {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto;
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-xs);
+  margin: 12px 0;
+}
+
+.audit-table th, .audit-table td {
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  text-align: left;
+}
+
+.audit-table th {
+  background: var(--color-ivory-200);
+  font-weight: 700;
+}
+
+.audit-table tr.flagged-row {
+  background: #FFF5F5;
+  color: #C53030;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Trust & Safety Center (Feature 5)
+   ========================================================================== */
+.safety-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.safety-tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.safety-tier-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.safety-tier-card.tier-unverified {
+  border-top: 4px solid var(--color-warning);
+}
+.safety-tier-card.tier-vouched {
+  border-top: 4px solid var(--color-info);
+}
+.safety-tier-card.tier-field {
+  border-top: 4px solid var(--color-forest-600);
+}
+
+.blocked-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.blocked-user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--color-ivory-100);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+}
+
+/* Responsive Rules */
+@media (max-width: 1080px) {
+  .map-viewport-container {
+    grid-template-columns: 1fr;
+  }
+  .missions-grid {
+    grid-template-columns: 1fr;
+  }
+  .safety-tiers-grid {
+    grid-template-columns: 1fr;
+  }
+  .transport-requests-grid {
+    grid-template-columns: 1fr;
+  }
+}

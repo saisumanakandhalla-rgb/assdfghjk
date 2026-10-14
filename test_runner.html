@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LIFELOOP Automated Test Suite</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/ecosystem.css">
+  <link rel="stylesheet" href="css/features.css">
+</head>
+<body style="padding: 24px; font-family: sans-serif;">
+  <h1 id="testSuiteHeader">LIFELOOP Automated Verification Suite</h1>
+  <div id="testResults" style="margin: 20px 0; font-family: monospace; font-size: 14px;"></div>
+
+  <!-- Mounting elements for testing -->
+  <aside class="demo-disclaimer-banner">
+    <div class="demo-disclaimer-content">
+      <span class="demo-pill-badge">Test</span>
+    </div>
+    <button id="btnDisclaimerInfo">Notice Details</button>
+  </aside>
+  <header class="app-header">
+    <a href="#" class="brand-container"></a>
+    <nav class="main-nav">
+      <button class="nav-tab-btn" data-view="ecosystem"></button>
+      <button class="nav-tab-btn" data-view="matcher"></button>
+      <button class="nav-tab-btn" data-view="transport"></button>
+      <button class="nav-tab-btn" data-view="learn"></button>
+      <button class="nav-tab-btn" data-view="map"></button>
+      <button class="nav-tab-btn" data-view="safety"></button>
+    </nav>
+    <select id="roleSelectDropdown"></select>
+    <button id="headerCipBadge"><span id="headerCipCount"></span></button>
+    <button id="userProfileTrigger"><div id="headerUserAvatar"></div></button>
+    <button id="mobileMenuToggle"></button>
+  </header>
+  <main id="viewContainer"></main>
+  <div class="modal-overlay" id="globalModalOverlay">
+    <div class="modal-card" id="globalModalCard"></div>
+  </div>
+  <div class="toast-container" id="globalToastContainer"></div>
+  <button id="btnResetDemoState"></button>
+
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/components/ecosystem-view.js"></script>
+  <script src="js/components/opportunity-matcher.js"></script>
+  <script src="js/components/transport-matcher.js"></script>
+  <script src="js/components/learning-missions.js"></script>
+  <script src="js/components/impact-map.js"></script>
+  <script src="js/components/trust-safety.js"></script>
+  <script src="js/components/profile-modal.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    const results = [];
+    function assert(name, condition, errorMsg = '') {
+      if (condition) {
+        results.push({ name, pass: true });
+      } else {
+        results.push({ name, pass: false, error: errorMsg });
+      }
+    }
+
+    try {
+      // Test 1: Data Architecture
+      assert("Seed Data Loaded", !!window.LIFELOOP_DATA, "LIFELOOP_DATA is missing");
+      assert("Personas Pool Populated", window.LIFELOOP_DATA.personas.length >= 4, "Expected at least 4 personas");
+      assert("Opportunities Pool Populated", window.LIFELOOP_DATA.opportunities.length >= 5, "Expected at least 5 opportunities");
+      assert("Transport Requests Populated", window.LIFELOOP_DATA.transportRequests.length >= 3, "Expected at least 3 transport requests");
+      assert("Vehicles Pool Populated", window.LIFELOOP_DATA.vehiclesPool.length >= 4, "Expected at least 4 vehicles");
+      assert("Learning Missions Populated", window.LIFELOOP_DATA.learningMissions.length >= 3, "Expected 3 missions");
+      assert("Map Nodes Populated", window.LIFELOOP_DATA.mapNodes.length >= 6, "Expected at least 6 map nodes");
+
+      // Test 2: State Management & Reactive Store
+      assert("LifeLoopState Instantiated", !!window.lifeLoopState, "lifeLoopState missing");
+      const initialRole = window.lifeLoopState.state.currentRole;
+      assert("Default Role is Student", initialRole === 'student', "Initial role should be student");
+
+      // Switch Role
+      window.lifeLoopState.switchRole('farmer');
+      assert("Role Switched to Farmer", window.lifeLoopState.state.currentRole === 'farmer', "Current role should be farmer");
+      assert("Active User Switched", window.lifeLoopState.state.activeUser.name === 'Harish Patel', "User should be Harish Patel");
+
+      // Switch to Vehicle Provider
+      window.lifeLoopState.switchRole('provider');
+      assert("Role Switched to Provider", window.lifeLoopState.state.currentRole === 'provider', "Current role should be provider");
+      assert("Active User is Vikram Singh", window.lifeLoopState.state.activeUser.name === 'Vikram Singh', "User should be Vikram Singh");
+
+      // Test 3: Feature 1 - Opportunity Creation & Interest
+      const newOpp = window.lifeLoopState.addOpportunity({
+        title: "Test Digital Audit For Mustard Seed Co-op",
+        sector: "learn",
+        roleNeeded: "Student",
+        category: "Digital Ledger",
+        location: "Solan North Block",
+        urgency: "Medium",
+        reward: "120 CIP",
+        description: "Test description for automated verification."
+      });
+      assert("Opportunity Added to State", !!newOpp && newOpp.id.startsWith('opp_'), "Opp ID should start with opp_");
+      assert("Opportunity Marked as User Created", newOpp.isSample === false, "User opp should not be sample");
+
+      const expressed = window.lifeLoopState.expressInterestInOpportunity(newOpp.id, "Test interest message");
+      assert("Interest Expressed Successfully", expressed === true, "Should return true on first expression");
+      assert("Interest Recorded in State", !!window.lifeLoopState.state.myInterests[newOpp.id], "Interest should be recorded");
+
+      // Test 4: Feature 2 - Farm-to-Transport Matching & Strict Provider Confirmation Rule
+      const newReq = window.lifeLoopState.addTransportRequest({
+        cropType: "Organic Apples",
+        quantityKg: 1200,
+        pickupArea: "Riverside Gate 1",
+        destinationArea: "Central Mandi Gate 2",
+        preferredDate: "Tomorrow 7 AM",
+        maxBudget: "1800",
+        cargoCondition: "Crates requiring tarp"
+      });
+      assert("Transport Request Created", !!newReq && newReq.status === 'requested', "Status should be requested");
+
+      // Provider proposes quote
+      const testVehicle = window.LIFELOOP_DATA.vehiclesPool[0];
+      const matchOk = window.lifeLoopState.providerExpressInterest(newReq.id, testVehicle, "₹ 1,700");
+      assert("Provider Expressed Interest", matchOk === true, "providerExpressInterest should return true");
+      assert("Request Status Updated to interest_received", newReq.status === 'interest_received', "Status should be interest_received");
+      assert("Provider Suitability Calculated", newReq.interestedProviders[0].suitabilityScore > 0, "Score should be calculated");
+      assert("Strict Rule: Booking NOT Confirmed Yet", newReq.status !== 'confirmed', "Never confirm automatically!");
+
+      // Farmer proposes terms
+      window.lifeLoopState.proposeDispatchTerms(newReq.id, newReq.interestedProviders[0].providerId, "Agreed ₹ 1,700 with tarp");
+      assert("Request Status Updated to proposed", newReq.status === 'proposed', "Status should be proposed");
+      assert("Provider Status Updated to dispatch_proposed", newReq.interestedProviders[0].status === 'dispatch_proposed', "Prov status should be dispatch_proposed");
+      assert("Strict Rule: Still NOT Confirmed", newReq.status !== 'confirmed', "Must not confirm without provider!");
+
+      // Provider confirms booking
+      const confirmedOk = window.lifeLoopState.confirmTransportBooking(newReq.id, newReq.interestedProviders[0].providerId);
+      assert("Provider Confirms Booking", confirmedOk === true, "confirmTransportBooking should return true");
+      assert("Request Status Confirmed", newReq.status === 'confirmed', "Status must now be confirmed");
+      assert("Confirmed Provider Set", !!newReq.confirmedProvider, "confirmedProvider should be set");
+
+      // Test 5: Feature 3 - Practical Learning Missions
+      const mResult = window.lifeLoopState.completeMission('mission_harvest_slip', { weight: 64, grade: 'Tier A' });
+      assert("Mission Harvest Slip Completed", mResult === true, "completeMission should return true");
+      assert("Mission Recorded in State", !!window.lifeLoopState.state.completedMissions['mission_harvest_slip'], "Mission should be in completedMissions");
+      assert("CIP Points Awarded", window.lifeLoopState.state.cipBalance > 400, "CIP balance should increase");
+
+      // Test 6: Feature 4 - Impact Map
+      const mapContainer = document.getElementById('viewContainer');
+      window.ImpactMap.render(mapContainer);
+      assert("Impact Map Rendered SVG", !!mapContainer.querySelector('.map-svg-board'), "Map SVG should be rendered");
+      assert("Impact Map Pins Rendered", mapContainer.querySelectorAll('.map-pin').length >= 6, "Pins should be rendered");
+
+      // Test 7: Feature 5 - Trust and Safety Controls (Block & Report)
+      const blockOk = window.lifeLoopState.blockUser("Suspicious User", "Spam");
+      assert("User Blocked in State", blockOk === true, "blockUser should return true");
+      assert("Blocked User in Blocklist", window.lifeLoopState.state.blockedUsers.includes("Suspicious User"), "User should be in blockedUsers");
+
+      const reportOk = window.lifeLoopState.submitReport("Listing #103", "Price Docking", "Agent attempted to dock 20%");
+      assert("Report Submitted in State", !!reportOk && reportOk.id.startsWith('rep_'), "Report should have id starting with rep_");
+      assert("Report in Reports Array", window.lifeLoopState.state.reports.length >= 1, "Reports array should have item");
+
+      // Test 8: All View Renderers
+      window.EcosystemView.render(mapContainer);
+      assert("Ecosystem View Rendered", !!mapContainer.querySelector('.circular-loop-svg'), "Circular loop SVG rendered");
+
+      window.OpportunityMatcher.render(mapContainer);
+      assert("Opportunity Matcher Rendered", !!mapContainer.querySelector('.matcher-section'), "Matcher section rendered");
+
+      window.TransportMatcher.render(mapContainer);
+      assert("Transport Matcher Rendered", !!mapContainer.querySelector('.transport-layout'), "Transport layout rendered");
+
+      window.LearningMissions.render(mapContainer);
+      assert("Learning Missions Rendered", !!mapContainer.querySelector('.missions-section'), "Missions section rendered");
+
+      window.TrustSafety.render(mapContainer);
+      assert("Trust Safety Rendered", !!mapContainer.querySelector('.safety-layout'), "Safety layout rendered");
+
+    } catch (e) {
+      assert("Fatal Error", false, e.toString() + "\n" + e.stack);
+    }
+
+    // Output results to DOM
+    const resultDiv = document.getElementById('testResults');
+    let passCount = 0;
+    let failCount = 0;
+
+    results.forEach(r => {
+      const line = document.createElement('div');
+      if (r.pass) {
+        passCount++;
+        line.style.color = '#166534';
+        line.textContent = `[PASS] ${r.name}`;
+      } else {
+        failCount++;
+        line.style.color = '#DC2626';
+        line.textContent = `[FAIL] ${r.name}: ${r.error || ''}`;
+      }
+      resultDiv.appendChild(line);
+    });
+
+    const summary = document.createElement('div');
+    summary.style.marginTop = '16px';
+    summary.style.fontWeight = 'bold';
+    summary.textContent = `SUMMARY: ${passCount} PASSED, ${failCount} FAILED out of ${results.length} assertions.`;
+    summary.id = "testSummary";
+    resultDiv.prepend(summary);
+  </script>
+</body>
+</html>
